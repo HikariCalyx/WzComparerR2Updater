@@ -30,7 +30,7 @@ class Program
             Directory.CreateDirectory(tempUpdateFolder);
             ZipFile.ExtractToDirectory(updateZipPath, tempUpdateFolder);
 
-            string[] directoriesToDelete = { "Lib", "Plugin" };
+            string[] directoriesToDelete = { "Lib", "Plugin", "runtimes" };
             foreach (var dir in directoriesToDelete)
             {
                 string dirPath = Path.Combine(currentDirectory, dir);
