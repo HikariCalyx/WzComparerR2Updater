@@ -9,15 +9,20 @@ class Program
     [STAThread]
     static void Main(string[] args)
     {
-        if (args.Length == 0)
+        if (args.Length < 2)
         {
             return;
         }
 
         string updateZipPath = args[0];
+        string dotNetVersion = args[1];
         string currentDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         string tempUpdateFolder = Path.Combine(currentDirectory, "UpdateTemp");
         string wzComparerR2Path = Path.Combine(currentDirectory, "WzComparerR2.exe");
+
+        string targetSubFolder = GetTargetSubFolder(dotNetVersion);
+
+        if (string.IsNullOrEmpty(targetSubFolder)) return;
 
         try
         {
@@ -45,7 +50,7 @@ class Program
                 File.Delete(file);
             }
 
-            foreach (var file in Directory.GetFiles(tempUpdateFolder))
+            foreach (var file in Directory.GetFiles(Path.Combine(tempUpdateFolder, targetSubFolder)))
             {
                 string fileName = Path.GetFileName(file);
                 string destFile = Path.Combine(currentDirectory, fileName);
@@ -56,7 +61,7 @@ class Program
                 File.Move(file, destFile);
             }
 
-            MoveDirectory(tempUpdateFolder, currentDirectory);
+            MoveDirectory(Path.Combine(tempUpdateFolder, targetSubFolder), currentDirectory);
             Directory.Delete(tempUpdateFolder, true);
 
         }
@@ -86,6 +91,17 @@ class Program
         {
             process.Kill();
             process.WaitForExit();
+        }
+    }
+
+    static string GetTargetSubFolder(string versionArg)
+    {
+        switch (versionArg)
+        {
+            case "4": return "net462";
+            case "6": return "net6.0-windows";
+            case "8": return "net8.0-windows";
+            default: return null;
         }
     }
 
