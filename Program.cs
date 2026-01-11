@@ -22,6 +22,7 @@ class Program
         try
         {
             KillProcess("WzComparerR2");
+            KillProcess("WzComparerR2.anycpu");
 
             if (Directory.Exists(tempUpdateFolder))
             {
